@@ -31,6 +31,24 @@ def fracdiff(X: pd.Series, d: float, threshold: float=1e-4) -> pd.Series:
 
     return pd.Series(Xd, index=result_index)
 
+def get_weights_by_threshold(d: float, threshold: float=1e-4) -> np.ndarray:
+    W = [1.0]
+    k = 1
+    while True:
+        w_k = -W[-1] * (d - k + 1) / k
+        W.append(w_k)
+        if abs(w_k) < threshold:
+            break
+        k += 1
+    return np.array(W)
+
+def get_weights_by_size(d: float, size: int) -> np.ndarray:
+    W = [1.0]
+    for k in range(1, size):
+        w_k = -W[-1] * (d - k + 1) / k
+        W.append(w_k)
+    return np.array(W)
+
 
 def fracint(X: pd.Series, d: float, threshold: float=1e-4) -> pd.Series:
     print(f"Calculating fractional integration with d={d} and threshold={threshold}")
